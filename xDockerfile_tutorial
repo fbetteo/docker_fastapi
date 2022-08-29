@@ -1,0 +1,45 @@
+# FROM ubuntu:latest
+
+# RUN apt-get update -y
+
+# RUN apt-get install -y python3-pip python3-dev build-essential
+
+# COPY . /app
+
+# WORKDIR /app
+
+# RUN pip3 install -r requirements.txt
+
+# ENTRYPOINT [“python3”]
+
+# CMD [“app.py”]
+
+
+
+FROM ubuntu:latest
+
+ENV PYTHONDONTWRITEBYTECODE=1
+# linux commands para docker
+RUN apt update && apt upgrade -v
+
+# no entiendo bien pero es basicamente para actualizar pip y derivados
+RUN apt install -y -q build-essential python3-pip python3-dev
+RUN pip3 install -U pip setuptools wheel
+RUN pip3 install gunicorn uvloop httptools
+
+# movemos requirements a la app (?)
+COPY requirements.txt /app/requirements.txt
+RUN pip3 install -r /app/requirements.txt
+
+COPY service/ /app
+
+# WORKDIR app
+# EXPOSE 8000:8000
+# CMD [ "python3", "main.py" ]
+# SUPER RUN
+# ENTRYPOINT   /usr/local/bin/gunicorn -b 0.0.0.0:80 -w 4 -k uvicorn.workers.UvicornWorker main:app --chdir /app
+# ENTRYPOINT ["/usr/local/bin/gunicorn -b 0.0.0.0:80 -w 4 -k uvicorn.workers.UvicornWorker"]
+# CMD ["../../app/main.py"]
+
+
+# /usr/local/bin/gunicorn main:app -b 0.0.0.0:80 -w 4 -k uvicorn.works.UvicornWorker  --chdir /app
